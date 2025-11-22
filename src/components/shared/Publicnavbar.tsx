@@ -1,6 +1,7 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 export function PublicNavbar() {
     const menuItems = ['Home', 'Doctors', 'Services', 'About', 'Reviews', 'Contact'];
@@ -17,9 +18,9 @@ export function PublicNavbar() {
                 </div>
 
                 <div className="hidden md:flex items-center space-x-8">
-                    {menuItems.map(item => <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-700 hover:text-sky-500 font-medium transition-colors">
+                    {menuItems.map(item => <Link key={item} href={`#${item.toLowerCase()}`} className="text-gray-700 hover:text-sky-500 font-medium transition-colors">
                         {item}
-                    </a>)}
+                    </Link>)}
                 </div>
 
                 <Button variant={`default`} size="sm">
