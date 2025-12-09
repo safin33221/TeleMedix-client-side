@@ -10,9 +10,13 @@ import Link from "next/link";
 import LoginForm from "@/components/module/auth/loginForm";
 
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams?: Promise<{ redirect: string }> }) {
+  const params = (await searchParams) || { redirect: "" }
+
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-white flex items-center justify-center p-4">
+
+    <div className="min-h-screen bg-linear-to-br from-sky-50 via-blue-50 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-xl">
         {/* Header */}
         <div className=" mb-8 flex gap-5 text-left">
@@ -28,7 +32,7 @@ export default function LoginPage() {
 
         {/* Card */}
 
-        <LoginForm />
+        <LoginForm redirect={params.redirect} />
         {/* Back to Home */}
         <div className="mt-6 text-center">
           <Link

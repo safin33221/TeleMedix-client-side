@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useActionState } from "react";
 import { Mail, Lock, Shield } from "lucide-react";
 
 import {
@@ -8,29 +9,37 @@ import {
     FieldGroup,
     Field,
     FieldLabel,
+    FieldDescription,
 } from "@/components/ui/field";
 
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { loginUser } from "@/services/auth/loginUser";
 
-export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
+export default function LoginForm({ redirect }: { redirect: string }) {
+    const [state, formAction, isPending] = useActionState(loginUser, null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const getFieldError = (fieldName: string) => {
+        if (!state?.errors) return null;
+
+        const error = state.errors.find((err: any) => err.field === fieldName);
+        return error?.message || null;
     };
+
+    console.log(state);
 
     return (
         <div className="max-w-3xl mx-auto w-full">
             <Card className="p-6 shadow-sm border rounded-xl">
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <FieldSet className="space-y-3">
-                        <FieldGroup className="space-y-4">
+                <form action={formAction} className="space-y-5">
+                    {
+                        redirect && <input type="hidden" name="redirect" value={redirect} />
 
+                    }
+                    <FieldSet className="space-y-3">
+                        <FieldGroup className="space-y-2">
                             {/* Email */}
                             <Field>
                                 <FieldLabel htmlFor="email">Email Address</FieldLabel>
@@ -38,14 +47,17 @@ export default function LoginForm() {
                                     <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                     <Input
                                         id="email"
-                                        type="email"
+                                        name="email"
                                         placeholder="example@mail.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
                                         className="pl-10"
                                         required
                                     />
                                 </div>
+                                {getFieldError("email") && (
+                                    <FieldDescription className="text-red-500">
+                                        {getFieldError("email")}
+                                    </FieldDescription>
+                                )}
                             </Field>
 
                             {/* Password */}
@@ -55,16 +67,19 @@ export default function LoginForm() {
                                     <Lock className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                     <Input
                                         id="password"
+                                        name="password"
                                         type="password"
                                         placeholder="Enter your password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
                                         className="pl-10"
                                         required
                                     />
                                 </div>
+                                {getFieldError("password") && (
+                                    <FieldDescription className="text-red-500">
+                                        {getFieldError("password")}
+                                    </FieldDescription>
+                                )}
                             </Field>
-
                         </FieldGroup>
                     </FieldSet>
 
@@ -72,22 +87,21 @@ export default function LoginForm() {
                     <label className="flex items-center space-x-2 cursor-pointer pt-2">
                         <input
                             type="checkbox"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
+                            name="remember"
                             className="w-4 h-4 text-sky-500 border-gray-300 rounded"
                         />
                         <span className="text-sm text-gray-700">Remember me</span>
                     </label>
 
                     {/* Login Button */}
-                    <Button variant="outline" className="w-full mt-2">
-                        Sign In
+                    <Button disabled={isPending} variant="outline" className="w-full mt-2">
+                        {isPending ? "Signing In..." : "Sign In"}
                     </Button>
                 </form>
 
                 {/* Register Link */}
                 <p className="mt-4 text-center text-gray-600 text-sm">
-                    Don’t have an account?{" "}
+                    Don’t have an account{" "}
                     <Link
                         href="/register"
                         className="text-sky-600 hover:text-sky-700 font-semibold"
