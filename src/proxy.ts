@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { cookies } from 'next/headers';
 import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute, UserRole } from './lib/auth-utils';
+import { deleteCookies, getCookies } from './services/auth/tokenHandler';
 
 
 
 export async function proxy(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
-    const cookieStore = await cookies();
-    const accessToken = request.cookies.get("accessToken")?.value;
+
+    // const accessToken = request.cookies.get("accessToken")?.value;
+    const accessToken = await getCookies("accessToken") || null
 
     let userRole: UserRole | null = null;
 
@@ -26,10 +27,12 @@ export async function proxy(request: NextRequest) {
                 return NextResponse.redirect(new URL("/login", request.url));
             }
 
-            userRole = verified.role as UserRole    ;
+            userRole = verified.role as UserRole;
         } catch {
-            cookieStore.delete("accessToken");
-            cookieStore.delete("refreshToken");
+            // cookieStore.delete("accessToken");
+            // cookieStore.delete("refreshToken");
+            await deleteCookies("accessToken");
+            await deleteCookies("refreshToken");
             return NextResponse.redirect(new URL("/login", request.url));
         }
     }

@@ -20,6 +20,7 @@ import { loginUser } from "@/services/auth/loginUser";
 
 export default function LoginForm({ redirect }: { redirect: string }) {
     const [state, formAction, isPending] = useActionState(loginUser, null);
+    console.log("state", state);
 
     const getFieldError = (fieldName: string) => {
         if (!state?.errors) return null;

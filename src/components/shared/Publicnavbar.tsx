@@ -2,8 +2,13 @@ import React from 'react';
 import { Activity } from 'lucide-react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { getCookies } from '@/services/auth/tokenHandler';
+import LogoutBtn from './LogoutBtn';
 
-export function PublicNavbar() {
+export async function PublicNavbar() {
+
+    const accessToken = await getCookies("accessToken")
+
     const menuItems = ['Home', 'Doctors', 'Services', 'About', 'Reviews', 'Contact'];
     return <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,10 +27,16 @@ export function PublicNavbar() {
                         {item}
                     </Link>)}
                 </div>
+                {
+                    accessToken ? <LogoutBtn /> : (
+                        <Link href={`/login`}>
+                            <Button variant={`default`} size="sm">
+                                Login / Sign Up
+                            </Button>
+                        </Link>
+                    )
+                }
 
-                <Button variant={`default`} size="sm">
-                    Login / Sign Up
-                </Button>
             </div>
         </div>
     </nav>;

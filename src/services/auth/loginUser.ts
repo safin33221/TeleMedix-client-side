@@ -3,10 +3,9 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { z } from "zod";
 import { parse } from 'cookie';
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { NextResponse } from 'next/server';
 import { isValidRedirectForRole } from '@/lib/auth-utils';
+import { setCookie } from './tokenHandler';
 const loginZodValidation = z.object({
     email: z
         .email("Invalid email address"),
@@ -48,6 +47,9 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             }
         })
 
+        const result = await res.json()
+
+
 
 
         const setCookieHeader = res.headers.getSetCookie();
@@ -71,8 +73,8 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             throw new Error("Refresh Token not found")
         }
 
-        const cookiesStore = await cookies()
-        cookiesStore.set("accessToken", accessTokenObject.accessToken, {
+
+        await setCookie("accessToken", accessTokenObject.accessToken, {
             secure: true,
             httpOnly: true,
             maxAge: parseInt(accessTokenObject["Max-Age"]) || 1000 * 60 * 60,
@@ -80,7 +82,7 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             sameSite: accessTokenObject['sameSite'] || "none"
 
         })
-        cookiesStore.set("refreshToken", refreshTokenObject.refreshToken, {
+        await setCookie("refreshToken", refreshTokenObject.refreshToken, {
             secure: true,
             httpOnly: true,
             maxAge: parseInt(refreshTokenObject["Max-Age"]) || 1000 * 60 * 60 * 24 * 90,
@@ -111,7 +113,9 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             }
         };
         const userRole: UserRole = verified.role;
-
+        if (!result.success) {
+            throw new Error(`${process.env.NODE_ENV === "development" ? result.message : "Login failed, invalid credentials"}`)
+        }
         if (redirectTo) {
             const requestPath = redirectTo.toString();
 
@@ -121,16 +125,19 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             } else {
                 redirect(getDefaultDashboardRoute(userRole));
             }
+        } else {
+            redirect(getDefaultDashboardRoute(userRole));
+
         }
 
 
 
-        // return result;
+        return result;
     } catch (error: any) {
         if (error?.digest?.startsWith("NEXT_REDIRECT")) {
             throw error;
         }
         console.log(error);
-        return { success: false, errors: [{ field: "server", message: "Login failed" }] };
+        return { success: false, message: error.message };
     }
 };
