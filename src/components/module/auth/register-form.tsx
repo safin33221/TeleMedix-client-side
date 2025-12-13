@@ -14,8 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { registerPatient } from "@/services/auth/registerPatient";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
     const [state, formAction, isPending] = useActionState(registerPatient, null);
@@ -27,7 +28,11 @@ export default function RegisterForm() {
         return error?.message || null;
     };
 
-    console.log(state);
+    useEffect(() => {
+        if (state && !state.success && state.message) {
+            toast.error(state.message)
+        }
+    }, [state])
 
     return (
         <div className="max-w-2xl mx-auto w-full">
@@ -84,7 +89,7 @@ export default function RegisterForm() {
                                 {/* Email */}
                                 <Field className="w-full">
                                     <FieldLabel htmlFor="email">Email</FieldLabel>
-                                    <div className="relative">   
+                                    <div className="relative">
                                         <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                         <Input
                                             id="email"

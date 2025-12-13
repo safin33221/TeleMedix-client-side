@@ -114,19 +114,19 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
         };
         const userRole: UserRole = verified.role;
         if (!result.success) {
-            throw new Error(`${process.env.NODE_ENV === "development" ? result.message : "Login failed, invalid credentials"}`)
+            throw new Error(result.message || "login failed")
         }
         if (redirectTo) {
             const requestPath = redirectTo.toString();
 
 
             if (isValidRedirectForRole(requestPath, userRole)) {
-                redirect(requestPath)
+                redirect(`${requestPath}?loggedIn=true`)
             } else {
-                redirect(getDefaultDashboardRoute(userRole));
+                redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
             }
         } else {
-            redirect(getDefaultDashboardRoute(userRole));
+            redirect(`${getDefaultDashboardRoute(userRole)}?loggedIn=true`);
 
         }
 
@@ -138,6 +138,6 @@ export const loginUser = async (_currentState: any, formData: FormData): Promise
             throw error;
         }
         console.log(error);
-        return { success: false, message: error.message };
+        return { success: false, message: `${process.env.NODE_ENV === "development" ? error.message : "Login failed, invalid credentials"}` };
     }
 };

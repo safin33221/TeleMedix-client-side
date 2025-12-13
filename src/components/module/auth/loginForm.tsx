@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { Mail, Lock, Shield } from "lucide-react";
 
 import {
@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { loginUser } from "@/services/auth/loginUser";
+import { toast } from "sonner";
 
 export default function LoginForm({ redirect }: { redirect: string }) {
     const [state, formAction, isPending] = useActionState(loginUser, null);
@@ -29,7 +30,11 @@ export default function LoginForm({ redirect }: { redirect: string }) {
         return error?.message || null;
     };
 
-    console.log(state);
+    useEffect(() => {
+        if (state && !state.success && state.message) {
+            toast.error(state.message)
+        }
+    }, [state])
 
     return (
         <div className="max-w-3xl mx-auto w-full">

@@ -63,9 +63,6 @@ export const registerPatient = async (_currentData: any, formData: any): Promise
             throw error;
         }
         console.log(error);
-        return {
-            success: false,
-            errors: [{ field: "form", message: "Registration failed" }]
-        };
+        return { success: false, message: `${process.env.NODE_ENV === "development" ? error.message : "Login failed, invalid credentials"}` };
     }
 };
