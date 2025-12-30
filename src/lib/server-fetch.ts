@@ -10,8 +10,11 @@ const serverFetchHelper = async (endpoint: string, options: RequestInit): Promis
     const accessToken = await getCookies("accessToken")
     const response = await fetch(`${BackendBaseUrl}${endpoint}`, {
         headers: {
+            Cookie: accessToken ? `accessToken=${accessToken}` : "",
             ...headers,
-            Cookie: accessToken ? `accessToken=${accessToken}` : ''
+            // ...(accessToken ? { "Authorization": `Bearer ${accessToken}` } : {}),
+            // ...(accessToken ? { "Authorization": accessToken } : {}),
+
         },
         ...restOptions
 

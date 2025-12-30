@@ -1,12 +1,13 @@
 "use client";
 
+import LogoutBtn from "@/components/shared/LogoutBtn";
 import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { UserInfo } from "@/types/user";
 import { Lock, LogOut, User, User2 } from "lucide-react";
@@ -16,6 +17,7 @@ export function UserDropdown({ userInfo }: { userInfo: UserInfo | null }) {
   const router = useRouter();
 
   const handleLogout = () => {
+
     router.push("/logout?loggedOut=true");
   };
 
@@ -64,10 +66,9 @@ export function UserDropdown({ userInfo }: { userInfo: UserInfo | null }) {
         {/* Logout */}
         <DropdownMenuItem
           onClick={handleLogout}
-          className="flex items-center gap-2 text-red-600 focus:text-red-600"
+          className="flex items-center gap-2 text-red-600 focus:text-red-600 w"
         >
-          <LogOut className="w-4" />
-          Logout
+          <LogoutBtn />
         </DropdownMenuItem>
 
       </DropdownMenuContent>

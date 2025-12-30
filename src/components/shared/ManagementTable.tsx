@@ -124,7 +124,7 @@ export default function ManagementTable<T>({
                                                         {onDelete && (
                                                             <DropdownMenuItem
                                                                 onClick={() => onDelete(item)}
-                                                                className="text-destructive"
+                                                                className="text-destructive flex items-center cursor-pointer"
                                                             >
                                                                 <Trash className="mr-2 h-4 w-4" />
                                                                 Delete

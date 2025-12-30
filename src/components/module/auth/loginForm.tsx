@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useActionState, useEffect } from "react";
+import { useActionState, useEffect } from "react";
 import { Mail, Lock, Shield } from "lucide-react";
 
 import {
     FieldSet,
     FieldGroup,
     Field,
-    FieldLabel,
-    FieldDescription,
+    FieldLabel
 } from "@/components/ui/field";
 
 import { Input } from "@/components/ui/input";
@@ -18,17 +17,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { loginUser } from "@/services/auth/loginUser";
 import { toast } from "sonner";
+import InputFieldError from "@/components/shared/InputFieldError";
 
 export default function LoginForm({ redirect }: { redirect: string }) {
     const [state, formAction, isPending] = useActionState(loginUser, null);
     console.log("state", state);
 
-    const getFieldError = (fieldName: string) => {
-        if (!state?.errors) return null;
-
-        const error = state.errors.find((err: any) => err.field === fieldName);
-        return error?.message || null;
-    };
 
     useEffect(() => {
         if (state && !state.success && state.message) {
@@ -58,12 +52,8 @@ export default function LoginForm({ redirect }: { redirect: string }) {
                                         className="pl-10"
                                         required
                                     />
+                                    <InputFieldError field="email" state={state} />
                                 </div>
-                                {getFieldError("email") && (
-                                    <FieldDescription className="text-red-500">
-                                        {getFieldError("email")}
-                                    </FieldDescription>
-                                )}
                             </Field>
 
                             {/* Password */}
@@ -79,12 +69,13 @@ export default function LoginForm({ redirect }: { redirect: string }) {
                                         className="pl-10"
                                         required
                                     />
+                                    <InputFieldError field="password" state={state} />
                                 </div>
-                                {getFieldError("password") && (
+                                {/* {getInputFieldError("password", state) && (
                                     <FieldDescription className="text-red-500">
-                                        {getFieldError("password")}
+                                        {getInputFieldError("password", state)}
                                     </FieldDescription>
-                                )}
+                                )} */}
                             </Field>
                         </FieldGroup>
                     </FieldSet>

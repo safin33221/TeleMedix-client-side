@@ -17,7 +17,7 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
 
         const userInfo: UserInfo = {
             email: verifiedToken.email,
-            role: verifiedToken.role
+            role: verifiedToken.role    
         }
         return userInfo
     } catch (error) {
