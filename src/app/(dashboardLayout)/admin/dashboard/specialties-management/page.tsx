@@ -7,6 +7,7 @@ import { Suspense } from "react";
 
 export default async function page() {
   const result = await getSpecialties()
+  console.log({ result });
   return (
     <div className="space-y-6">
       <SpecialtiesManagementHeader />

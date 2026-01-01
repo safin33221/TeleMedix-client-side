@@ -47,7 +47,7 @@ const SpecialtiesManagementHeader = () => {
                     onClick: handleOpenDialog,
                 }}
             />
-   
+    
         </>
     );
 };

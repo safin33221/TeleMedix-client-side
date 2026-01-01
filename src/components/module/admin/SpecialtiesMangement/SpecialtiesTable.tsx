@@ -29,14 +29,13 @@ const SpecialtiesTable = ({ specialties }: SpecialtyTableProps) => {
     };
 
     const handleDelete = (specialty: ISpecialty) => {
-
         setDeletingSpecialty(specialty);
     };
 
     const confirmDelete = async () => {
         if (!deletingSpecialty) return;
 
-
+        setIsDeletingDialog(true);
         const result = await deleteSpecialties(deletingSpecialty.id as string);
         console.log(result);
 

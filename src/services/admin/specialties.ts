@@ -53,13 +53,9 @@ export async function getSpecialties() {
 
 export async function deleteSpecialties(id: string) {
     try {
-
-        const response = await serverFetch.delete(`/specialties/${id}`)
-        console.log("response form server action", response);
-        const result = await response.json()
-
-        return result
-
+        const response = await serverFetch.delete(`/specialties/${id}`);
+        const result = await response.json();
+        return result;
     } catch (error: any) {
         console.log(error);
         return { success: false, message: `${process.env.NODE_ENV === "development" ? error.message : "failed to delete specialties"}` };
