@@ -32,4 +32,5 @@ export interface IDoctor {
     }>;
 
     doctorSchedules?: IDoctorSchedule[];
+    sortKey: string
 }
